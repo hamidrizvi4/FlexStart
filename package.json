@@ -1,0 +1,25 @@
+{
+    "name": "TeraHash",
+    "version": "1.0.0",
+    "description": "Anti-Counterfeit Dapp",
+    "main": "truffle-config.js",
+    "directories": {
+        "test": "test"
+    },
+    "scripts": {
+        "dev": "lite-server",
+        "test": ""
+    },
+    "author": "",
+    "license": "",
+    "devDependencies": {
+        "bootstrap": "^5.0.0",
+        "chai": "",
+        "chai-as-promised": "",
+        "chai-bignumber": "",
+        "lite-server": "",
+        "nodemon": "",
+        "truffle": "",
+        "truffle-contract": ""
+    }
+}
