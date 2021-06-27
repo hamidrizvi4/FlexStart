@@ -4,12 +4,12 @@ contract anticounterfeit{
     
     event Added(uint256 index);
     
-    uint items=0;
+    uint items;
     
-    struct State{
+    struct Seller{
         string description;
         address person;
-    }
+    }mapping (uint256 => Seller) public positions;
     
     struct Medicine{
         string MedicineName;
@@ -21,13 +21,13 @@ contract anticounterfeit{
         string ManfucturerLocation;
         string ManfucturerInfo;
         uint256 totalStates;
-        mapping (uint256 => State) positions;
+        mapping (uint256 => Seller) positions;
     }
     
-    mapping(uint=>Medicine) AllMedicines;
+    mapping(uint=>Medicine) public AllMedicines;
     
     
-     function concat(string memory _a, string memory _b) public pure returns (string memory){
+     function concat(string memory _a, string memory _b) private pure returns (string memory){
         bytes memory bytes_a = bytes(_a);
         bytes memory bytes_b = bytes(_b);
         string memory length_ab = new string(bytes_a.length + bytes_b.length);
@@ -40,8 +40,8 @@ contract anticounterfeit{
     
 
     
-    function AddMedicine(uint _rate,string memory _medicinename,string memory _patchno,string memory _productiondate,string memory _manufacturerlocation,string memory _description)public returns(bool){
-            Medicine memory NewMedicine=Medicine(_medicinename,items,_patchno,msg.sender,_productiondate,_rate,_manufacturerlocation,_description,0);
+    function AddMedicine(uint _rate,uint _medicineId,string memory _medicinename,string memory _patchno,string memory _productiondate,string memory _manufacturerlocation,string memory _description)public returns(bool){
+            Medicine memory NewMedicine=Medicine(_medicinename,_medicineId,_patchno,msg.sender,_productiondate,_rate,_manufacturerlocation,_description,0);
             AllMedicines[items]=NewMedicine;
             items = items+1;
             emit Added(items-1);
@@ -51,29 +51,29 @@ contract anticounterfeit{
     
     function SearchMedicine(uint _id)public view returns(string memory){
            require(_id<items);
-           string memory output="Medicine Name ";
+           string memory output="   Medicine Name : ";
            output=concat(output,AllMedicines[_id].MedicineName);
-           output=concat(output,"<br>Patch No. :");
+           output=concat(output,"   Patch No. :");
            output=concat(output,AllMedicines[_id].Patchno);
-           output=concat(output,"<br>Production Date: ");
+           output=concat(output,"   Production Date: ");
            output=concat(output,AllMedicines[_id].Productiondate);
-           output=concat(output,"<br>Manfucturer's Location: ");
+           output=concat(output,"   Manfucturer's Location: ");
            output=concat(output,AllMedicines[_id].ManfucturerLocation);
-           output=concat(output,"<br>Manfucturer Information: ");
+           output=concat(output,"   Manfucturer Information: ");
            output=concat(output,AllMedicines[_id].ManfucturerInfo);
           for (uint256 j=0; j<AllMedicines[_id].totalStates; j++){
             output=concat(output, AllMedicines[_id].positions[j].description);
         }
            return output;
     }
-    function addState(uint _productId, string memory _date, string memory _supplierlocation) public returns (string memory) {
+    function addSeller(uint _productId, string memory _date, string memory _supplierlocation) public returns (string memory) {
         require(_productId<items);
-        string memory desc="<br><br><b>Date: ";
+        string memory desc="     Date: ";
         desc=concat(desc, _date);
-        desc=concat(desc, "</b><br>Supplier Location: ");
+        desc=concat(desc, "      Supplier Location: ");
         desc=concat(desc, _supplierlocation);
-        State memory newState = State({person: msg.sender, description: desc});
-        AllMedicines[_productId].positions[ AllMedicines[_productId].totalStates ]=newState;
+        Seller memory newSeller = Seller({person: msg.sender, description: desc});
+        AllMedicines[_productId].positions[ AllMedicines[_productId].totalStates ]=newSeller;
         AllMedicines[_productId].totalStates = AllMedicines[_productId].totalStates +1;
         return desc;
     }
