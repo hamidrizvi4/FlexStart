@@ -3,7 +3,17 @@ pragma solidity ^0.5.11;
 contract anticounterfeit{
     
     event Added(uint256 index);
-    
+
+enum State {notSold, Sold}
+State public state;
+
+constructor() public {
+    state=State.notSold;
+}
+
+function changeState() public {
+    state=State.Sold;
+}
     uint items;
     
     struct Seller{
@@ -28,7 +38,6 @@ contract anticounterfeit{
     
     mapping(uint=>Manf) public CheckManf;
     
-    
     function AddManf(uint _rate,uint _medicineId,string memory _medicinename,string memory _patchno,string memory _productiondate,string memory _manufacturerlocation,string memory _manfucturerinfo)public returns(bool){
             Manf memory NewManf=Manf(_medicinename,_medicineId,_patchno,msg.sender,_productiondate,_rate,_manufacturerlocation,_manfucturerinfo);
             CheckManf[items]=NewManf;
@@ -47,5 +56,8 @@ contract anticounterfeit{
             emit Added(items-1);
         return true;
     }
-
+    
+    function isSold() public view returns(bool) {
+        return state ==State.Sold;
+    }
 }
